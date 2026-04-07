@@ -12,14 +12,12 @@
         body { font-family: 'Inter', sans-serif; background: #f8faf6; color: #1a2e1f; line-height: 1.5; }
         .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
         
-        /* Mobile first responsive */
         @media (max-width: 768px) {
             .container { padding: 0 16px; }
             .nav-links { gap: 12px; }
             .nav-links a { font-size: 0.85rem; }
             .card { padding: 18px; }
             .card h3 { font-size: 1.2rem; }
-            .consult-id-badge { font-size: 0.7rem; padding: 3px 8px; }
         }
         
         @media (max-width: 480px) {
@@ -34,7 +32,6 @@
         .nav-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 12px 0; }
         .logo { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 700; color: #2b5e2b; }
         .logo img { height: 40px; width: auto; }
-        .logo i { font-size: 1.6rem; color: #3c8c3c; }
         .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
         .nav-links a { text-decoration: none; font-weight: 500; color: #2c4b2c; transition: 0.2s; cursor: pointer; padding: 6px 0; font-size: 0.9rem; }
         .nav-links a:hover, .nav-links a.active { color: #1f8730; border-bottom: 2px solid #1f8730; }
@@ -46,7 +43,6 @@
         .btn-secondary { background: #eef4ea; color: #2b6e2b; border: 1px solid #cbe2c1; padding: 6px 16px; border-radius: 32px; font-weight: 500; cursor: pointer; font-size: 0.85rem; }
         .btn-danger { background: #fff0f0; color: #b33; border: 1px solid #f0c0c0; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
         .btn-success { background: #e0f0e0; color: #2c6e2c; border: 1px solid #b8d9b8; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
-        .btn-warning { background: #fff4e0; color: #b86f0f; border: 1px solid #ffe0a0; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
         
         .card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03); border: 1px solid #e2f0dc; margin-bottom: 20px; }
         .card h3 { font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: #1f4f1f; }
@@ -65,16 +61,10 @@
         .success-message { color: #2c7a2c; background: #e0f0e0; padding: 12px; border-radius: 16px; margin-bottom: 16px; }
         .message-info { background: #e9f4e4; padding: 12px; border-radius: 16px; margin: 12px 0; font-size: 0.9rem; }
         
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #e2efdb; font-size: 0.85rem; }
-        th { background: #f4faf0; font-weight: 600; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-        
-        .consult-card { background: #fefaf0; border-radius: 18px; padding: 14px; margin-bottom: 12px; border: 1px solid #e6e0c5; transition: 0.2s; }
+        .consult-card { background: #fefaf0; border-radius: 18px; padding: 14px; margin-bottom: 12px; border: 1px solid #e6e0c5; }
         .crop-card { background: #fafef7; border-radius: 18px; padding: 14px; margin-bottom: 12px; border: 1px solid #d4e8ca; cursor: pointer; transition: 0.2s; }
         .crop-card:hover { background: #f0faea; transform: translateY(-2px); }
         
-        .growth-timeline { margin-top: 14px; padding: 14px; background: #fefef7; border-radius: 18px; border: 1px solid #e2efdb; }
         .stages-container { display: flex; justify-content: space-between; margin: 16px 0; position: relative; flex-wrap: wrap; gap: 6px; }
         .stage-item { text-align: center; flex: 1; min-width: 55px; position: relative; z-index: 2; }
         .stage-icon { width: 40px; height: 40px; background: #eef4ea; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 1.2rem; }
@@ -82,7 +72,6 @@
         .stage-item.completed .stage-icon { background: #4c9e4c; color: white; }
         .stage-item.future .stage-icon { background: #e0e8dc; color: #8ba888; }
         .stage-label { font-size: 0.6rem; font-weight: 500; margin-top: 4px; }
-        .stage-item.active .stage-label { color: #2b6e2b; font-weight: 700; }
         .progress-line { position: absolute; top: 20px; left: 0; right: 0; height: 3px; background: #e0ecdb; z-index: 1; }
         .progress-fill-line { position: absolute; top: 20px; left: 0; height: 3px; background: #2b6e2b; z-index: 1; transition: width 0.3s; }
         
@@ -95,12 +84,9 @@
         
         .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
         
-        .edit-input { padding: 5px 8px; border-radius: 12px; border: 1px solid #cfe2c6; font-family: inherit; width: 100%; font-size: 0.8rem; }
-        .crop-icon-select { width: 55px; padding: 5px; border-radius: 12px; border: 1px solid #cfe2c6; }
-        
         .consult-id-badge { background: #2b6e2b; color: white; padding: 3px 10px; border-radius: 30px; font-family: monospace; font-size: 0.75rem; letter-spacing: 0.5px; display: inline-block; }
         
-        /* Compare Page Styles */
+        /* Compare Styles */
         .compare-header { display: grid; grid-template-columns: 180px repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; background: #f4faf0; padding: 12px; border-radius: 18px; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; }
         .compare-row { display: grid; grid-template-columns: 180px repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 10px 12px; border-bottom: 1px solid #e2efdb; align-items: center; font-size: 0.85rem; }
         .crop-checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
@@ -111,11 +97,8 @@
             .compare-header, .compare-row { grid-template-columns: 1fr; gap: 8px; }
             .compare-header { display: none; }
             .compare-row { margin-bottom: 12px; border: 1px solid #e2efdb; border-radius: 16px; padding: 12px; }
-            .crop-checkbox-group { gap: 8px; }
-            .crop-checkbox { padding: 5px 10px; font-size: 0.75rem; }
         }
         
-        /* Modal */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: white; border-radius: 24px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
@@ -168,8 +151,7 @@
     let currentUser = null;
     let currentPage = "addConsult";
 
-   
-    const LOGO_HTML = `<img src="cropfit.jpg" alt="CropFit Logo" style="height: 45px;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\\\\'fas fa-seedling\\\\' style=\\\\'font-size: 1.8rem;\\\\'></i>'">`;
+    const LOGO_HTML = `<i class="fas fa-seedling" style="font-size: 1.8rem;"></i>`;
 
     function saveSession(user) { sessionStorage.setItem('cropfit_user', JSON.stringify(user)); }
     function loadSession() { const saved = sessionStorage.getItem('cropfit_user'); return saved ? JSON.parse(saved) : null; }
@@ -204,18 +186,6 @@
             consult.userEmail === currentUser.email &&
             consult.consultId !== excludeConsultId
         );
-    }
-
-    function deleteCropFromSavedIfNotReferenced(cropId) {
-        const isReferenced = isCropReferencedByOtherConsults(cropId);
-        if(!isReferenced) {
-            const index = savedCrops.findIndex(s => s.cropId === cropId && s.userEmail === currentUser.email);
-            if(index !== -1) {
-                savedCrops.splice(index, 1);
-                return true;
-            }
-        }
-        return false;
     }
 
     // ==================== AUTH ====================
@@ -340,7 +310,7 @@
     function renderUserApp() {
         return `
             <div class="navbar"><div class="container nav-inner">
-                <div class="logo">${LOGO_HTML}</div>
+                <div class="logo">${LOGO_HTML}<span>CropFit</span></div>
                 <div class="nav-links">
                     <a data-page="addConsult" class="active"><i class="fas fa-plus-circle"></i> Add Consultation</a>
                     <a data-page="myConsults"><i class="fas fa-history"></i> My Consultations</a>
@@ -353,7 +323,7 @@
         `;
     }
 
-    // ==================== PAGE: ADD CONSULTATION ====================
+    // ==================== PAGE: ADD CONSULTATION with Compare Feature ====================
     function renderAddConsultPage() {
         return `
             <div class="card" style="margin: 20px 0;">
@@ -398,10 +368,23 @@
                 <h3>Recommended Crops for ${region}, ${soilType} - ${season}</h3>
                 <div></div>
             </div>
+            
+            <!-- Compare Section -->
             <div class="card">
+                <h4><i class="fas fa-chart-simple"></i> Compare Recommended Crops</h4>
+                <p style="font-size:0.85rem; margin-bottom:12px;">Select at least 2 crops to compare their characteristics side by side.</p>
+                <div class="crop-checkbox-group" id="compareCropCheckboxes">
+                    ${recommendations.map(crop => `<label class="crop-checkbox"><input type="checkbox" value="${crop.id}" class="compare-cb"> ${crop.imageIcon} ${crop.name}</label>`).join('')}
+                </div>
+                <button id="compareRecommendedBtn" class="btn-primary"><i class="fas fa-chart-line"></i> Compare Selected</button>
+                <div id="compareResult" style="margin-top: 16px;"></div>
+            </div>
+            
+            <div class="card">
+                <h4><i class="fas fa-list-ul"></i> Recommended Crops</h4>
                 <div id="recommendationsList">
                     ${recommendations.map(crop => `
-                        <div class="recommendation-item">
+                        <div class="recommendation-item" data-crop-id="${crop.id}">
                             <div class="flex-between">
                                 <div><strong>${crop.imageIcon} ${crop.name}</strong><br><small>Growth: ${crop.growthDuration} | Water: ${crop.waterReq}</small></div>
                                 <div>
@@ -427,6 +410,37 @@
         
         document.getElementById('backToAddConsult')?.addEventListener('click', () => renderUserPage('addConsult'));
         
+        // Compare button event
+        document.getElementById('compareRecommendedBtn')?.addEventListener('click', () => {
+            const selectedBoxes = document.querySelectorAll('.compare-cb:checked');
+            const selectedIds = Array.from(selectedBoxes).map(cb => parseInt(cb.value));
+            
+            if(selectedIds.length < 2) {
+                alert("⚠️ Please select at least 2 crops to compare.");
+                return;
+            }
+            
+            const selectedCrops = cropsDB.filter(c => selectedIds.includes(c.id));
+            
+            let html = `<div class="compare-header">
+                <span>Crop</span><span>Growth Duration</span><span>Water Needs</span><span>Soil Type</span><span>Suitability</span><span>Sunlight</span>
+            </div>`;
+            
+            selectedCrops.forEach(crop => {
+                html += `<div class="compare-row">
+                    <span><strong>${crop.imageIcon} ${crop.name}</strong></span>
+                    <span>${crop.growthDuration}</span>
+                    <span>${crop.waterReq}</span>
+                    <span>${crop.soilCompatibility}</span>
+                    <span class="suitability-high">${crop.suitabilityScore}%</span>
+                    <span>${crop.sunlight}</span>
+                </div>`;
+            });
+            
+            document.getElementById('compareResult').innerHTML = html;
+        });
+        
+        // View details buttons
         document.querySelectorAll('.view-crop-details').forEach(btn => {
             btn.addEventListener('click', () => {
                 const cropId = btn.dataset.cropId;
@@ -438,6 +452,7 @@
             });
         });
         
+        // Save crop buttons
         document.querySelectorAll('.save-crop-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const cropId = parseInt(btn.dataset.cropId);
@@ -673,7 +688,7 @@
         });
     }
 
-    // ==================== PAGE: MY CROPS with Compare Feature ====================
+    // ==================== PAGE: MY CROPS (NO Compare Feature) ====================
     function renderMyCropsPage() {
         const userSaved = savedCrops.filter(s => s.userEmail === currentUser.email);
         
@@ -681,22 +696,7 @@
             <div style="margin:20px 0;">
                 <div class="card">
                     <h3><i class="fas fa-seedling"></i> My Crops</h3>
-                    <p>Click on any crop to track its growth progress. Select crops to compare.</p>
-                    
-                    <!-- Compare Section -->
-                    <div style="background:#f4faf0; border-radius:18px; padding:16px; margin-bottom:20px;">
-                        <h4 style="margin-bottom:12px;"><i class="fas fa-chart-simple"></i> Compare My Saved Crops</h4>
-                        <p style="font-size:0.85rem; margin-bottom:12px;">Select at least 2 crops to compare their characteristics side by side.</p>
-                        <div class="crop-checkbox-group" id="compareCropCheckboxes">
-                            ${userSaved.map(saved => {
-                                const crop = getCropById(saved.cropId);
-                                return crop ? `<label class="crop-checkbox"><input type="checkbox" value="${crop.id}" class="compare-cb"> ${crop.imageIcon} ${crop.name}</label>` : '';
-                            }).join('')}
-                        </div>
-                        <button id="compareMyCropsBtn" class="btn-primary"><i class="fas fa-chart-line"></i> Compare Selected</button>
-                        <div id="compareResult" style="margin-top: 16px;"></div>
-                    </div>
-                    
+                    <p>Click on any crop to track its growth progress.</p>
                     <div id="savedCropsList">
                         ${renderSavedCropsList(userSaved)}
                     </div>
@@ -724,35 +724,6 @@
                 </div>
             `;
         }).join('');
-    }
-
-    function handleCompareMyCrops() {
-        const selectedBoxes = document.querySelectorAll('.compare-cb:checked');
-        const selectedIds = Array.from(selectedBoxes).map(cb => parseInt(cb.value));
-        
-        if(selectedIds.length < 2) {
-            alert("⚠️ Please select at least 2 crops to compare.");
-            return;
-        }
-        
-        const selectedCrops = cropsDB.filter(c => selectedIds.includes(c.id));
-        
-        let html = `<div class="compare-header">
-            <span>Crop</span><span>Growth Duration</span><span>Water Needs</span><span>Soil Type</span><span>Suitability</span><span>Sunlight</span>
-        </div>`;
-        
-        selectedCrops.forEach(crop => {
-            html += `<div class="compare-row">
-                <span><strong>${crop.imageIcon} ${crop.name}</strong></span>
-                <span>${crop.growthDuration}</span>
-                <span>${crop.waterReq}</span>
-                <span>${crop.soilCompatibility}</span>
-                <span class="suitability-high">${crop.suitabilityScore}%</span>
-                <span>${crop.sunlight}</span>
-            </div>`;
-        });
-        
-        document.getElementById('compareResult').innerHTML = html;
     }
 
     function showCropGrowthPage(cropId) {
@@ -878,11 +849,8 @@
         else if(pageName === 'myCrops') {
             mainContent.innerHTML = renderMyCropsPage();
             
-            document.getElementById('compareMyCropsBtn')?.addEventListener('click', handleCompareMyCrops);
-            
             document.querySelectorAll('.crop-card').forEach(card => {
-                card.addEventListener('click', (e) => {
-                    if(e.target.closest('.crop-checkbox')) return;
+                card.addEventListener('click', () => {
                     const cropId = parseInt(card.dataset.cropId);
                     showCropGrowthPage(cropId);
                 });
@@ -895,11 +863,11 @@
         });
     }
 
-    // ==================== ADMIN APP (simplified - keep same functionality) ====================
+    // ==================== ADMIN APP ====================
     function renderAdminApp() {
         return `
             <div class="navbar"><div class="container nav-inner">
-                <div class="logo">${LOGO_HTML}</div>
+                <div class="logo">${LOGO_HTML}<span>CropFit Admin</span></div>
                 <div class="nav-links">
                     <a data-admin="crops" class="active"><i class="fas fa-seedling"></i> Manage Crops</a>
                     <a data-admin="users"><i class="fas fa-users"></i> Manage Users</a>
@@ -912,12 +880,11 @@
         `;
     }
 
-    // Admin functions (keep existing functionality)
     let currentEditCrop = null;
     
     function openEditCropModal(crop) {
         currentEditCrop = crop;
-        const iconOptionsHtml = iconOptions.map(icon => `<option value="${icon}" ${crop.imageIcon === icon ? 'selected' : ''} style="font-size:1.2rem;">${icon}</option>`).join('');
+        const iconOptionsHtml = iconOptions.map(icon => `<option value="${icon}" ${crop.imageIcon === icon ? 'selected' : ''}>${icon}</option>`).join('');
         
         const modalHtml = `
             <div id="editCropModal" class="modal" style="display: flex;">
@@ -990,7 +957,7 @@
                     <div id="addCropError" class="error-message"></div>
                 </div>
                 <div style="overflow-x: auto;">
-                    <table><thead><tr><th>Icon</th><th>Crop Name</th><th>Growth</th><th>Water</th><th>Soil</th><th>Season</th><th>Score</th><th>Actions</th></tr></thead>
+                    <table style="width:100%"><thead><tr><th>Icon</th><th>Crop Name</th><th>Growth</th><th>Water</th><th>Soil</th><th>Season</th><th>Score</th><th>Actions</th></tr></thead>
                     <tbody>${cropsDB.map(crop => `<tr><td>${crop.imageIcon}</td><td><strong>${crop.name}</strong></td><td>${crop.growthDuration}</td><td>${crop.waterReq}</td><td>${crop.soilCompatibility}</td><td>${crop.season}</td><td>${crop.suitabilityScore}%</td>
                     <td><button class="btn-secondary edit-crop-admin" data-crop-id="${crop.id}" style="margin-right:5px;">Edit</button><button class="btn-danger delete-crop-admin" data-crop-id="${crop.id}">Delete</button></td></tr>`).join('')}</tbody></table>
                 </div>
@@ -999,11 +966,10 @@
     }
 
     function renderAdminUsers() {
-        return `<div class="card"><h3>Manage Users</h3>
-        <div style="overflow-x: auto;"><table><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+        return `<div class="card"><h3>Manage Users</h3><div style="overflow-x: auto;"><table style="width:100%"><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
         <tbody>${usersDB.map(user => `<tr><td>${user.email}</td><td>${user.name}</td><td>${user.role}</td><td>${user.status}</td>
         <td>${user.status === 'active' ? `<button class="btn-warning deactivate-user" data-user-id="${user.id}">Deactivate</button>` : `<button class="btn-success activate-user" data-user-id="${user.id}">Activate</button>`}
-        <button class="btn-danger delete-user" data-user-id="${user.id}" ${user.role === 'admin' ? 'disabled' : ''}>Delete</button></td></tr>`).join('')}</tbody></table></div>
+        <button class="btn-danger delete-user" data-user-id="${user.id}" ${user.role === 'admin' ? 'disabled' : ''}>Delete</button></td></tr>`).join('')}</tbody>}</div>
         <div class="message-info">Admin accounts cannot be deleted.</div></div>`;
     }
 
