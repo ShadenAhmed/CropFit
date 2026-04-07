@@ -1,0 +1,35 @@
+# CropFit - Project Authors
+
+## Project Information
+CropFit - Smart Crop Recommendation System
+IT320 Practical Software Engineering
+second Semester, 2026
+King Saud University
+College of Computer and Information Sciences
+Information Technology Department
+
+## Scrum Team
+### Product Owner
+- Layan Alshehri
+### Developers
+- Shaden Ahmed Alqarni
+- Sana Sami
+- Lana Abdullah Alhussaini
+- Sara Al Sh
+### Scrum Master
+- Dr. Ghaida Alfayez
+### Stakeholders
+- Dr. Ghaida Alfayez
+
+## Version History
+- v1.0 (Sprint 2) - Initial release with core features:
+  - User authentication (Login/Register)
+  - Add Consultation with crop recommendations
+  - My Consultations with search, edit, delete
+  - My Crops with growth tracking
+  - Compare crops feature
+  - Admin panel for crop and user management
+  - Responsive design for mobile devices
+
+## Repository
+GitHub: https://github.com/CropFit/cropfit-web
