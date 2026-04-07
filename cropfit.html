@@ -1,0 +1,1093 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>CropFit | Smart Crop Recommendation System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: #f8faf6; color: #1a2e1f; line-height: 1.5; }
+        .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        
+        /* Mobile first responsive */
+        @media (max-width: 768px) {
+            .container { padding: 0 16px; }
+            .nav-links { gap: 12px; }
+            .nav-links a { font-size: 0.85rem; }
+            .card { padding: 18px; }
+            .card h3 { font-size: 1.2rem; }
+            .consult-id-badge { font-size: 0.7rem; padding: 3px 8px; }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-inner { flex-direction: column; gap: 12px; }
+            .nav-links { justify-content: center; }
+            .btn-primary, .btn-secondary, .btn-danger, .btn-outline { padding: 6px 12px; font-size: 0.75rem; }
+            .stages-container { flex-direction: column; align-items: flex-start; }
+            .progress-line, .progress-fill-line { display: none; }
+        }
+        
+        .navbar { background: #ffffff; box-shadow: 0 2px 12px rgba(0, 32, 0, 0.06); position: sticky; top: 0; z-index: 100; }
+        .nav-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 12px 0; }
+        .logo { display: flex; align-items: center; gap: 10px; font-size: 1.3rem; font-weight: 700; color: #2b5e2b; }
+        .logo img { height: 40px; width: auto; }
+        .logo i { font-size: 1.6rem; color: #3c8c3c; }
+        .nav-links { display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; font-weight: 500; color: #2c4b2c; transition: 0.2s; cursor: pointer; padding: 6px 0; font-size: 0.9rem; }
+        .nav-links a:hover, .nav-links a.active { color: #1f8730; border-bottom: 2px solid #1f8730; }
+        
+        .btn-outline { border: 1.5px solid #2b6e2b; background: transparent; padding: 6px 16px; border-radius: 40px; font-weight: 600; color: #2b6e2b; cursor: pointer; font-size: 0.85rem; }
+        .btn-outline:hover { background: #2b6e2b; color: white; }
+        .btn-primary { background: #2b6e2b; border: none; padding: 8px 24px; border-radius: 40px; font-weight: 600; color: white; cursor: pointer; font-size: 0.85rem; }
+        .btn-primary:hover { background: #1d551d; }
+        .btn-secondary { background: #eef4ea; color: #2b6e2b; border: 1px solid #cbe2c1; padding: 6px 16px; border-radius: 32px; font-weight: 500; cursor: pointer; font-size: 0.85rem; }
+        .btn-danger { background: #fff0f0; color: #b33; border: 1px solid #f0c0c0; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
+        .btn-success { background: #e0f0e0; color: #2c6e2c; border: 1px solid #b8d9b8; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
+        .btn-warning { background: #fff4e0; color: #b86f0f; border: 1px solid #ffe0a0; padding: 6px 14px; border-radius: 30px; cursor: pointer; font-size: 0.85rem; }
+        
+        .card { background: white; border-radius: 24px; padding: 20px; box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03); border: 1px solid #e2f0dc; margin-bottom: 20px; }
+        .card h3 { font-size: 1.25rem; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: #1f4f1f; }
+        .badge { background: #eef4e9; border-radius: 60px; padding: 4px 10px; font-size: 0.65rem; font-weight: 600; }
+        
+        .form-group { margin-bottom: 18px; }
+        label { font-weight: 500; display: block; margin-bottom: 6px; font-size: 0.9rem; }
+        input, select { width: 100%; padding: 10px 14px; border-radius: 24px; border: 1px solid #cfe2c6; font-family: inherit; font-size: 0.9rem; }
+        input:focus, select:focus { outline: none; border-color: #3b9e3b; }
+        
+        .auth-container { max-width: 450px; margin: 60px auto; }
+        .auth-tabs { display: flex; margin-bottom: 24px; border-bottom: 2px solid #e2f0dc; }
+        .auth-tab { flex: 1; text-align: center; padding: 12px; cursor: pointer; font-weight: 600; color: #5a7c5a; }
+        .auth-tab.active { color: #2b6e2b; border-bottom: 3px solid #2b6e2b; margin-bottom: -2px; }
+        .error-message { color: #dc3545; font-size: 0.75rem; margin-top: 5px; }
+        .success-message { color: #2c7a2c; background: #e0f0e0; padding: 12px; border-radius: 16px; margin-bottom: 16px; }
+        .message-info { background: #e9f4e4; padding: 12px; border-radius: 16px; margin: 12px 0; font-size: 0.9rem; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 10px 8px; text-align: left; border-bottom: 1px solid #e2efdb; font-size: 0.85rem; }
+        th { background: #f4faf0; font-weight: 600; }
+        .flex-between { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+        
+        .consult-card { background: #fefaf0; border-radius: 18px; padding: 14px; margin-bottom: 12px; border: 1px solid #e6e0c5; transition: 0.2s; }
+        .crop-card { background: #fafef7; border-radius: 18px; padding: 14px; margin-bottom: 12px; border: 1px solid #d4e8ca; cursor: pointer; transition: 0.2s; }
+        .crop-card:hover { background: #f0faea; transform: translateY(-2px); }
+        
+        .growth-timeline { margin-top: 14px; padding: 14px; background: #fefef7; border-radius: 18px; border: 1px solid #e2efdb; }
+        .stages-container { display: flex; justify-content: space-between; margin: 16px 0; position: relative; flex-wrap: wrap; gap: 6px; }
+        .stage-item { text-align: center; flex: 1; min-width: 55px; position: relative; z-index: 2; }
+        .stage-icon { width: 40px; height: 40px; background: #eef4ea; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 5px; font-size: 1.2rem; }
+        .stage-item.active .stage-icon { background: #2b6e2b; color: white; box-shadow: 0 2px 8px rgba(43,110,43,0.3); }
+        .stage-item.completed .stage-icon { background: #4c9e4c; color: white; }
+        .stage-item.future .stage-icon { background: #e0e8dc; color: #8ba888; }
+        .stage-label { font-size: 0.6rem; font-weight: 500; margin-top: 4px; }
+        .stage-item.active .stage-label { color: #2b6e2b; font-weight: 700; }
+        .progress-line { position: absolute; top: 20px; left: 0; right: 0; height: 3px; background: #e0ecdb; z-index: 1; }
+        .progress-fill-line { position: absolute; top: 20px; left: 0; height: 3px; background: #2b6e2b; z-index: 1; transition: width 0.3s; }
+        
+        .recommendation-item { background: #fafef7; border-left: 4px solid #3b9e3b; padding: 12px 16px; border-radius: 18px; margin-bottom: 12px; }
+        .crop-details-expanded { margin-top: 10px; padding: 10px; background: #eef4ea; border-radius: 14px; display: none; font-size: 0.85rem; }
+        .crop-details-expanded.show { display: block; }
+        
+        .search-box { display: flex; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .search-box input { flex: 1; min-width: 150px; }
+        
+        .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 10px; }
+        
+        .edit-input { padding: 5px 8px; border-radius: 12px; border: 1px solid #cfe2c6; font-family: inherit; width: 100%; font-size: 0.8rem; }
+        .crop-icon-select { width: 55px; padding: 5px; border-radius: 12px; border: 1px solid #cfe2c6; }
+        
+        .consult-id-badge { background: #2b6e2b; color: white; padding: 3px 10px; border-radius: 30px; font-family: monospace; font-size: 0.75rem; letter-spacing: 0.5px; display: inline-block; }
+        
+        /* Compare Page Styles */
+        .compare-header { display: grid; grid-template-columns: 180px repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; background: #f4faf0; padding: 12px; border-radius: 18px; margin-bottom: 8px; font-weight: 700; font-size: 0.85rem; }
+        .compare-row { display: grid; grid-template-columns: 180px repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; padding: 10px 12px; border-bottom: 1px solid #e2efdb; align-items: center; font-size: 0.85rem; }
+        .crop-checkbox-group { display: flex; flex-wrap: wrap; gap: 12px; margin: 16px 0; }
+        .crop-checkbox { display: flex; align-items: center; gap: 6px; padding: 8px 14px; background: #f4faf0; border-radius: 40px; cursor: pointer; font-size: 0.85rem; }
+        .suitability-high { color: #2c7a2c; font-weight: bold; }
+        
+        @media (max-width: 700px) {
+            .compare-header, .compare-row { grid-template-columns: 1fr; gap: 8px; }
+            .compare-header { display: none; }
+            .compare-row { margin-bottom: 12px; border: 1px solid #e2efdb; border-radius: 16px; padding: 12px; }
+            .crop-checkbox-group { gap: 8px; }
+            .crop-checkbox { padding: 5px 10px; font-size: 0.75rem; }
+        }
+        
+        /* Modal */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: white; border-radius: 24px; padding: 24px; max-width: 500px; width: 90%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .close-modal { background: none; border: none; font-size: 1.5rem; cursor: pointer; color: #999; }
+    </style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+    // ==================== DATABASE ====================
+    let cropsDB = [
+        { id: 1, name: "Tomato", growthDuration: "70-85 days", waterReq: "Moderate", soilCompatibility: "Loamy", season: "Spring, Summer", suitabilityScore: 92, sunlight: "Full sun", landArea: "0.5m²", imageIcon: "🍅", stages: ["Sowing", "Germination", "Vegetative", "Flowering", "Harvest"] },
+        { id: 2, name: "Lettuce", growthDuration: "45-55 days", waterReq: "High", soilCompatibility: "Sandy loam", season: "Spring, Autumn", suitabilityScore: 88, sunlight: "Partial shade", landArea: "0.2m²", imageIcon: "🥬", stages: ["Sowing", "Germination", "Vegetative", "Harvest"] },
+        { id: 3, name: "Carrot", growthDuration: "60-80 days", waterReq: "Moderate", soilCompatibility: "Sandy", season: "Spring, Fall", suitabilityScore: 85, sunlight: "Full sun", landArea: "0.1m²", imageIcon: "🥕", stages: ["Sowing", "Germination", "Vegetative", "Root Development", "Harvest"] },
+        { id: 4, name: "Bell Pepper", growthDuration: "60-90 days", waterReq: "Moderate", soilCompatibility: "Loamy", season: "Summer", suitabilityScore: 90, sunlight: "Full sun", landArea: "0.3m²", imageIcon: "🫑", stages: ["Sowing", "Germination", "Vegetative", "Flowering", "Fruiting", "Harvest"] },
+        { id: 5, name: "Cucumber", growthDuration: "50-70 days", waterReq: "High", soilCompatibility: "Rich loam", season: "Summer", suitabilityScore: 87, sunlight: "Full sun", landArea: "0.5m²", imageIcon: "🥒", stages: ["Sowing", "Germination", "Vine Growth", "Flowering", "Fruiting", "Harvest"] },
+        { id: 6, name: "Spinach", growthDuration: "40-50 days", waterReq: "Moderate", soilCompatibility: "Loamy", season: "Spring, Autumn", suitabilityScore: 84, sunlight: "Partial sun", landArea: "0.2m²", imageIcon: "🌱", stages: ["Sowing", "Germination", "Leaf Growth", "Harvest"] }
+    ];
+
+    const iconOptions = ["🍅", "🥬", "🥕", "🫑", "🥒", "🌱", "🌽", "🍆", "🧅", "🧄", "🥦", "🥔", "🍠", "🌶️", "🍓", "🍉", "🍊", "🍎", "🥝", "🌾"];
+
+    const adminEmails = [
+        "445200244@student.ksu.edu.sa",
+        "445206333@student.ksu.edu.sa",
+        "445202121@student.ksu.edu.sa",
+        "445200324@student.ksu.edu.sa",
+        "445200372@student.ksu.edu.sa"
+    ];
+    
+    const ADMIN_PASSWORD = "1234";
+
+    let usersDB = [];
+    
+    adminEmails.forEach((email, index) => {
+        usersDB.push({
+            id: index + 1,
+            email: email,
+            password: ADMIN_PASSWORD,
+            name: email.split('@')[0],
+            role: "admin",
+            status: "active"
+        });
+    });
+
+    let consultations = [];
+    let savedCrops = [];
+    let nextConsultNumber = 1;
+
+    let currentUser = null;
+    let currentPage = "addConsult";
+
+   
+    const LOGO_HTML = `<img src="cropfit.jpg" alt="CropFit Logo" style="height: 45px;" onerror="this.onerror=null; this.parentElement.innerHTML='<i class=\\\\'fas fa-seedling\\\\' style=\\\\'font-size: 1.8rem;\\\\'></i>'">`;
+
+    function saveSession(user) { sessionStorage.setItem('cropfit_user', JSON.stringify(user)); }
+    function loadSession() { const saved = sessionStorage.getItem('cropfit_user'); return saved ? JSON.parse(saved) : null; }
+    function clearSession() { sessionStorage.removeItem('cropfit_user'); }
+    
+    function isValidEmail(email) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email); }
+    function isAdminEmail(email) { return adminEmails.includes(email); }
+    function isCropNameExists(name, excludeId = null) { 
+        return cropsDB.some(crop => crop.name.toLowerCase() === name.toLowerCase() && crop.id !== excludeId); 
+    }
+    function getCropById(id) { return cropsDB.find(c => c.id === id); }
+    
+    function generateConsultId() {
+        const number = nextConsultNumber;
+        nextConsultNumber++;
+        return `CONS-${String(number).padStart(3, '0')}`;
+    }
+    
+    function getRecommendations(region, soilType, season) {
+        let filtered = cropsDB.filter(crop => {
+            const seasonMatch = crop.season.toLowerCase().includes(season.toLowerCase());
+            const soilMatch = crop.soilCompatibility.toLowerCase().includes(soilType.toLowerCase());
+            return seasonMatch || soilMatch;
+        });
+        if(filtered.length === 0) filtered = cropsDB.slice(0, 4);
+        return filtered.slice(0, 4);
+    }
+
+    function isCropReferencedByOtherConsults(cropId, excludeConsultId = null) {
+        return consultations.some(consult => 
+            consult.cropId === cropId && 
+            consult.userEmail === currentUser.email &&
+            consult.consultId !== excludeConsultId
+        );
+    }
+
+    function deleteCropFromSavedIfNotReferenced(cropId) {
+        const isReferenced = isCropReferencedByOtherConsults(cropId);
+        if(!isReferenced) {
+            const index = savedCrops.findIndex(s => s.cropId === cropId && s.userEmail === currentUser.email);
+            if(index !== -1) {
+                savedCrops.splice(index, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ==================== AUTH ====================
+    function renderAuth() {
+        return `
+            <div class="auth-container">
+                <div class="card" style="text-align: center;">
+                    <div class="logo" style="justify-content: center; margin-bottom: 20px;">${LOGO_HTML}</div>
+                    <div class="auth-tabs"><div class="auth-tab active" data-tab="login">Login</div><div class="auth-tab" data-tab="register">Register</div></div>
+                    <div id="auth-form-container">${renderLoginForm()}</div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function renderLoginForm() { 
+        return `<form id="loginForm">
+            <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="Enter your email"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="Enter your password"></div>
+            <div id="loginError" class="error-message"></div>
+            <button type="submit" class="btn-primary" style="width:100%">Login</button>
+            <p style="margin-top: 16px; font-size: 0.8rem;"><a href="#" id="registerLink" style="color: #2b6e2b;">Don't have an account? Register here</a></p>
+        </form>`; 
+    }
+    
+    function renderRegisterForm() { 
+        return `<form id="registerForm">
+            <div class="form-group"><label>Full Name</label><input type="text" id="regName" placeholder="Full name"></div>
+            <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="Email"></div>
+            <div class="form-group"><label>Password</label><input type="password" id="regPassword" placeholder="Password (min 4 characters)"></div>
+            <div class="form-group"><label>Confirm Password</label><input type="password" id="regConfirmPassword" placeholder="Confirm password"></div>
+            <div id="registerError" class="error-message"></div>
+            <div id="registerSuccess" class="success-message" style="display:none"></div>
+            <button type="submit" class="btn-primary" style="width:100%">Register</button>
+            <p style="margin-top: 16px; font-size: 0.8rem;"><a href="#" id="loginLink" style="color: #2b6e2b;">Already have an account? Login here</a></p>
+        </form>`; 
+    }
+
+    function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const errorDiv = document.getElementById('loginError');
+        errorDiv.innerHTML = '';
+        
+        if(!email || !password) { errorDiv.innerHTML = 'Please enter email and password.'; return; }
+        if(!isValidEmail(email)) { errorDiv.innerHTML = 'Please enter a valid email address.'; return; }
+        
+        const isAdmin = isAdminEmail(email);
+        
+        if(isAdmin) {
+            if(password !== ADMIN_PASSWORD) {
+                errorDiv.innerHTML = 'Invalid password for admin account.';
+                return;
+            }
+            
+            let user = usersDB.find(u => u.email === email);
+            if(!user) {
+                user = {
+                    id: usersDB.length + 1,
+                    email: email,
+                    password: ADMIN_PASSWORD,
+                    name: email.split('@')[0],
+                    role: "admin",
+                    status: "active"
+                };
+                usersDB.push(user);
+            }
+            
+            if(user.status !== 'active') { errorDiv.innerHTML = 'Account deactivated.'; return; }
+            
+            currentUser = { ...user, password: undefined };
+            saveSession(currentUser);
+            renderMainApp();
+            return;
+        }
+        
+        let user = usersDB.find(u => u.email === email);
+        
+        if(!user) {
+            errorDiv.innerHTML = 'Account not found. <a href="#" id="registerRedirect" style="color:#2b6e2b;">Click here to register</a>';
+            document.getElementById('registerRedirect')?.addEventListener('click', (e) => {
+                e.preventDefault();
+                document.querySelector('[data-tab="register"]').click();
+            });
+            return;
+        }
+        
+        if(user.password !== password) { errorDiv.innerHTML = 'Invalid password.'; return; }
+        if(user.status !== 'active') { errorDiv.innerHTML = 'Account deactivated.'; return; }
+        
+        currentUser = { ...user, password: undefined };
+        saveSession(currentUser);
+        renderMainApp();
+    }
+
+    function handleRegister(e) {
+        e.preventDefault();
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirm = document.getElementById('regConfirmPassword').value;
+        const errorDiv = document.getElementById('registerError');
+        const successDiv = document.getElementById('registerSuccess');
+        errorDiv.innerHTML = '';
+        successDiv.style.display = 'none';
+        
+        if(!name || !email || !password || !confirm) { errorDiv.innerHTML = 'All fields required.'; return; }
+        if(!isValidEmail(email)) { errorDiv.innerHTML = 'Please enter a valid email address.'; return; }
+        if(isAdminEmail(email)) { errorDiv.innerHTML = 'Cannot register as admin.'; return; }
+        if(usersDB.find(u => u.email === email)) { errorDiv.innerHTML = 'Email already registered. Please login.'; return; }
+        if(password.length < 4) { errorDiv.innerHTML = 'Password must be at least 4 characters.'; return; }
+        if(password !== confirm) { errorDiv.innerHTML = 'Passwords do not match.'; return; }
+        
+        usersDB.push({ id: usersDB.length+1, email, password, name, role: "user", status: "active" });
+        successDiv.innerHTML = 'Registration successful! Redirecting to login...';
+        successDiv.style.display = 'block';
+        setTimeout(() => document.querySelector('[data-tab="login"]').click(), 1500);
+    }
+
+    // ==================== USER APP ====================
+    function renderUserApp() {
+        return `
+            <div class="navbar"><div class="container nav-inner">
+                <div class="logo">${LOGO_HTML}</div>
+                <div class="nav-links">
+                    <a data-page="addConsult" class="active"><i class="fas fa-plus-circle"></i> Add Consultation</a>
+                    <a data-page="myConsults"><i class="fas fa-history"></i> My Consultations</a>
+                    <a data-page="myCrops"><i class="fas fa-seedling"></i> My Crops</a>
+                    <span class="badge"><i class="fas fa-user"></i> ${currentUser.name}</span>
+                    <button class="btn-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div></div>
+            <main class="container" id="mainContent"></main>
+        `;
+    }
+
+    // ==================== PAGE: ADD CONSULTATION ====================
+    function renderAddConsultPage() {
+        return `
+            <div class="card" style="margin: 20px 0;">
+                <h3><i class="fas fa-plus-circle"></i> New Crop Consultation</h3>
+                <p>Select your farming conditions to get personalized crop recommendations.</p>
+                <hr>
+                <div class="form-group">
+                    <label>📍 Region</label>
+                    <select id="regionSelect">
+                        <option value="">Select Region</option>
+                        <option>Central Region</option><option>Coastal Region</option>
+                        <option>Northern Region</option><option>Southern Region</option>
+                        <option>Eastern Region</option><option>Western Region</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🪴 Soil Type</label>
+                    <select id="soilTypeSelect">
+                        <option value="">Select Soil Type</option>
+                        <option>Loamy</option><option>Sandy</option><option>Clay</option><option>Peaty</option><option>Chalky</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>🌱 Planting Season</label>
+                    <select id="seasonSelect">
+                        <option value="">Select Season</option>
+                        <option>Spring</option><option>Summer</option><option>Autumn</option><option>Winter</option>
+                    </select>
+                </div>
+                <button id="viewRecommendationsBtn" class="btn-primary" style="width:100%"><i class="fas fa-search"></i> View Recommended Crops</button>
+            </div>
+        `;
+    }
+
+    function showRecommendationsPage(region, soilType, season) {
+        const recommendations = getRecommendations(region, soilType, season);
+        const mainContent = document.getElementById('mainContent');
+        
+        mainContent.innerHTML = `
+            <div class="page-header">
+                <button id="backToAddConsult" class="btn-outline"><i class="fas fa-arrow-left"></i> Back</button>
+                <h3>Recommended Crops for ${region}, ${soilType} - ${season}</h3>
+                <div></div>
+            </div>
+            <div class="card">
+                <div id="recommendationsList">
+                    ${recommendations.map(crop => `
+                        <div class="recommendation-item">
+                            <div class="flex-between">
+                                <div><strong>${crop.imageIcon} ${crop.name}</strong><br><small>Growth: ${crop.growthDuration} | Water: ${crop.waterReq}</small></div>
+                                <div>
+                                    <span style="color:#2c7a2c; font-weight:bold;">Suitability: ${crop.suitabilityScore}%</span>
+                                    <button class="btn-secondary view-crop-details" data-crop-id="${crop.id}" style="margin-left:8px;">View Details</button>
+                                    <button class="btn-success save-crop-btn" data-crop-id="${crop.id}" data-crop-name="${crop.name}" style="margin-left:8px;">Save to My Crops</button>
+                                </div>
+                            </div>
+                            <div id="crop-details-${crop.id}" class="crop-details-expanded">
+                                <hr>
+                                <p><i class="fas fa-tint"></i> <strong>Water Requirements:</strong> ${crop.waterReq}</p>
+                                <p><i class="fas fa-mountain"></i> <strong>Soil Compatibility:</strong> ${crop.soilCompatibility}</p>
+                                <p><i class="fas fa-sun"></i> <strong>Sunlight:</strong> ${crop.sunlight}</p>
+                                <p><i class="fas fa-ruler"></i> <strong>Land Area:</strong> ${crop.landArea}</p>
+                                <p><i class="fas fa-chart-line"></i> <strong>Growth Duration:</strong> ${crop.growthDuration}</p>
+                                <p><i class="fas fa-calendar"></i> <strong>Best Season:</strong> ${crop.season}</p>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>
+        `;
+        
+        document.getElementById('backToAddConsult')?.addEventListener('click', () => renderUserPage('addConsult'));
+        
+        document.querySelectorAll('.view-crop-details').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cropId = btn.dataset.cropId;
+                const detailsDiv = document.getElementById(`crop-details-${cropId}`);
+                if(detailsDiv) {
+                    detailsDiv.classList.toggle('show');
+                    btn.textContent = detailsDiv.classList.contains('show') ? 'Hide Details' : 'View Details';
+                }
+            });
+        });
+        
+        document.querySelectorAll('.save-crop-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cropId = parseInt(btn.dataset.cropId);
+                const cropName = btn.dataset.cropName;
+                
+                const existing = savedCrops.find(s => s.cropId === cropId && s.userEmail === currentUser.email);
+                if(existing) {
+                    alert(`⚠️ ${cropName} is already in your My Crops!`);
+                    return;
+                }
+                
+                const newConsultId = generateConsultId();
+                const newConsult = {
+                    consultId: newConsultId,
+                    region: region,
+                    soilType: soilType,
+                    season: season,
+                    cropId: cropId,
+                    cropName: cropName,
+                    createdAt: new Date().toISOString().slice(0,10),
+                    userEmail: currentUser.email
+                };
+                consultations.push(newConsult);
+                
+                savedCrops.push({
+                    cropId: cropId,
+                    userEmail: currentUser.email,
+                    startDate: null,
+                    currentStageIndex: null,
+                    savedAt: new Date().toISOString().slice(0,10)
+                });
+                
+                alert(`✅ ${cropName} saved to My Crops!\nConsultation ID: ${newConsultId}`);
+            });
+        });
+    }
+
+    // ==================== PAGE: MY CONSULTATIONS ====================
+    function renderMyConsultsPage() {
+        const userConsults = consultations.filter(c => c.userEmail === currentUser.email);
+        
+        return `
+            <div style="margin:20px 0;">
+                <div class="card">
+                    <h3><i class="fas fa-folder-open"></i> My Consultations</h3>
+                    <div class="search-box">
+                        <input type="text" id="searchConsultInput" placeholder="Search by Consult ID (e.g., CONS-001)">
+                        <button id="searchConsultBtn" class="btn-primary"><i class="fas fa-search"></i> Search</button>
+                        <button id="resetSearchBtn" class="btn-outline">Reset</button>
+                    </div>
+                    <div id="consultationsList">
+                        ${renderConsultationsList(userConsults)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderConsultationsList(consultsArray) {
+        if(consultsArray.length === 0) return '<p class="message-info">No consultations yet. Go to Add Consultation to create one.</p>';
+        
+        return consultsArray.map(consult => {
+            const crop = getCropById(consult.cropId);
+            return `
+                <div class="consult-card" data-consult-id="${consult.consultId}">
+                    <div class="flex-between">
+                        <strong><span class="consult-id-badge"><i class="fas fa-id-card"></i> ${consult.consultId}</span></strong>
+                        <span class="badge">${consult.createdAt}</span>
+                    </div>
+                    <p><strong>📍 Region:</strong> ${consult.region} | <strong>🪴 Soil:</strong> ${consult.soilType} | <strong>🌱 Season:</strong> ${consult.season}</p>
+                    <p><strong>🌾 Crop:</strong> ${crop ? `${crop.imageIcon} ${crop.name}` : consult.cropName}</p>
+                    <div class="flex-between" style="margin-top: 10px;">
+                        <button class="btn-secondary edit-consult-btn" data-consult-id="${consult.consultId}"><i class="fas fa-edit"></i> Edit</button>
+                        <button class="btn-danger delete-consult-btn" data-consult-id="${consult.consultId}"><i class="fas fa-trash"></i> Delete</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function deleteConsultation(consultId, isSearchResults = false, searchQuery = '') {
+        const consult = consultations.find(c => c.consultId === consultId && c.userEmail === currentUser.email);
+        if(!consult) return false;
+        
+        const cropId = consult.cropId;
+        const consultIndex = consultations.findIndex(c => c.consultId === consultId);
+        if(consultIndex !== -1) consultations.splice(consultIndex, 1);
+        
+        const stillReferenced = consultations.some(c => c.cropId === cropId && c.userEmail === currentUser.email);
+        
+        if(!stillReferenced) {
+            const savedIndex = savedCrops.findIndex(s => s.cropId === cropId && s.userEmail === currentUser.email);
+            if(savedIndex !== -1) {
+                savedCrops.splice(savedIndex, 1);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function showSearchResultsPage(query) {
+        const userConsults = consultations.filter(c => c.userEmail === currentUser.email);
+        const filtered = userConsults.filter(c => 
+            c.consultId.toLowerCase().includes(query.toLowerCase()) || 
+            c.cropName?.toLowerCase().includes(query.toLowerCase())
+        );
+        
+        const mainContent = document.getElementById('mainContent');
+        
+        mainContent.innerHTML = `
+            <div class="page-header">
+                <button id="backToMyConsults" class="btn-outline"><i class="fas fa-arrow-left"></i> Back to Consultations</button>
+                <h3><i class="fas fa-search"></i> Search Results for "${query}"</h3>
+                <div></div>
+            </div>
+            <div class="card">
+                ${filtered.length === 0 ? 
+                    '<p class="message-info">No consultations found matching your search.</p>' : 
+                    `<div id="searchResultsList">${renderConsultationsList(filtered)}</div>`
+                }
+            </div>
+        `;
+        
+        document.getElementById('backToMyConsults')?.addEventListener('click', () => renderUserPage('myConsults'));
+        attachConsultEvents(true, query);
+    }
+
+    function showEditPage(consultId) {
+        const consult = consultations.find(c => c.consultId === consultId && c.userEmail === currentUser.email);
+        if(!consult) return;
+        
+        const crop = getCropById(consult.cropId);
+        const mainContent = document.getElementById('mainContent');
+        
+        mainContent.innerHTML = `
+            <div class="page-header">
+                <button id="backToPrevious" class="btn-outline"><i class="fas fa-arrow-left"></i> Back</button>
+                <h3><i class="fas fa-edit"></i> Edit Consultation: <span class="consult-id-badge" style="background:#b86f0f;">${consult.consultId}</span></h3>
+                <div></div>
+            </div>
+            <div class="card">
+                <form id="editConsultForm">
+                    <div class="form-group">
+                        <label>📍 Region</label>
+                        <select id="editRegion" required>
+                            <option value="${consult.region}" selected>${consult.region}</option>
+                            <option>Central Region</option><option>Coastal Region</option>
+                            <option>Northern Region</option><option>Southern Region</option>
+                            <option>Eastern Region</option><option>Western Region</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>🪴 Soil Type</label>
+                        <select id="editSoilType" required>
+                            <option value="${consult.soilType}" selected>${consult.soilType}</option>
+                            <option>Loamy</option><option>Sandy</option><option>Clay</option><option>Peaty</option><option>Chalky</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>🌱 Season</label>
+                        <select id="editSeason" required>
+                            <option value="${consult.season}" selected>${consult.season}</option>
+                            <option>Spring</option><option>Summer</option><option>Autumn</option><option>Winter</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>🌾 Crop (cannot be changed)</label>
+                        <input type="text" value="${crop ? `${crop.imageIcon} ${crop.name}` : consult.cropName}" disabled style="background:#f0f0f0;">
+                    </div>
+                    <div class="flex-between" style="margin-top: 20px;">
+                        <button type="submit" class="btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                        <button type="button" id="cancelEdit" class="btn-outline"><i class="fas fa-times"></i> Cancel</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        let returnToSearch = false;
+        let searchQuery = '';
+        
+        document.getElementById('backToPrevious')?.addEventListener('click', () => {
+            if(returnToSearch && searchQuery) {
+                showSearchResultsPage(searchQuery);
+            } else {
+                renderUserPage('myConsults');
+            }
+        });
+        
+        document.getElementById('cancelEdit')?.addEventListener('click', () => {
+            if(returnToSearch && searchQuery) {
+                showSearchResultsPage(searchQuery);
+            } else {
+                renderUserPage('myConsults');
+            }
+        });
+        
+        document.getElementById('editConsultForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            consult.region = document.getElementById('editRegion').value;
+            consult.soilType = document.getElementById('editSoilType').value;
+            consult.season = document.getElementById('editSeason').value;
+            alert(`✅ Consultation ${consult.consultId} updated successfully!`);
+            
+            if(returnToSearch && searchQuery) {
+                showSearchResultsPage(searchQuery);
+            } else {
+                renderUserPage('myConsults');
+            }
+        });
+    }
+
+    function attachConsultEvents(isSearchResults = false, searchQuery = '') {
+        document.querySelectorAll('.edit-consult-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                showEditPage(btn.dataset.consultId);
+            });
+        });
+        
+        document.querySelectorAll('.delete-consult-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const consultId = btn.dataset.consultId;
+                if(confirm(`Are you sure you want to delete consultation ${consultId}?`)) {
+                    deleteConsultation(consultId, isSearchResults, searchQuery);
+                    if(isSearchResults && searchQuery) {
+                        showSearchResultsPage(searchQuery);
+                    } else {
+                        renderUserPage('myConsults');
+                    }
+                }
+            });
+        });
+    }
+
+    // ==================== PAGE: MY CROPS with Compare Feature ====================
+    function renderMyCropsPage() {
+        const userSaved = savedCrops.filter(s => s.userEmail === currentUser.email);
+        
+        return `
+            <div style="margin:20px 0;">
+                <div class="card">
+                    <h3><i class="fas fa-seedling"></i> My Crops</h3>
+                    <p>Click on any crop to track its growth progress. Select crops to compare.</p>
+                    
+                    <!-- Compare Section -->
+                    <div style="background:#f4faf0; border-radius:18px; padding:16px; margin-bottom:20px;">
+                        <h4 style="margin-bottom:12px;"><i class="fas fa-chart-simple"></i> Compare My Saved Crops</h4>
+                        <p style="font-size:0.85rem; margin-bottom:12px;">Select at least 2 crops to compare their characteristics side by side.</p>
+                        <div class="crop-checkbox-group" id="compareCropCheckboxes">
+                            ${userSaved.map(saved => {
+                                const crop = getCropById(saved.cropId);
+                                return crop ? `<label class="crop-checkbox"><input type="checkbox" value="${crop.id}" class="compare-cb"> ${crop.imageIcon} ${crop.name}</label>` : '';
+                            }).join('')}
+                        </div>
+                        <button id="compareMyCropsBtn" class="btn-primary"><i class="fas fa-chart-line"></i> Compare Selected</button>
+                        <div id="compareResult" style="margin-top: 16px;"></div>
+                    </div>
+                    
+                    <div id="savedCropsList">
+                        ${renderSavedCropsList(userSaved)}
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderSavedCropsList(savedArray) {
+        if(savedArray.length === 0) return '<p class="message-info">No crops saved yet. Go to Add Consultation and save crops to your collection.</p>';
+        
+        return savedArray.map(saved => {
+            const crop = getCropById(saved.cropId);
+            if(!crop) return '';
+            const hasStarted = saved.startDate !== null;
+            return `
+                <div class="crop-card" data-crop-id="${crop.id}">
+                    <div class="flex-between">
+                        <div><strong style="font-size: 1.1rem;">${crop.imageIcon} ${crop.name}</strong></div>
+                        <span class="badge">${hasStarted ? '🌱 Growing' : '📌 Saved'}</span>
+                    </div>
+                    <p><strong>Growth Duration:</strong> ${crop.growthDuration}</p>
+                    <p><strong>Water Needs:</strong> ${crop.waterReq}</p>
+                    <p><strong>Soil:</strong> ${crop.soilCompatibility}</p>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function handleCompareMyCrops() {
+        const selectedBoxes = document.querySelectorAll('.compare-cb:checked');
+        const selectedIds = Array.from(selectedBoxes).map(cb => parseInt(cb.value));
+        
+        if(selectedIds.length < 2) {
+            alert("⚠️ Please select at least 2 crops to compare.");
+            return;
+        }
+        
+        const selectedCrops = cropsDB.filter(c => selectedIds.includes(c.id));
+        
+        let html = `<div class="compare-header">
+            <span>Crop</span><span>Growth Duration</span><span>Water Needs</span><span>Soil Type</span><span>Suitability</span><span>Sunlight</span>
+        </div>`;
+        
+        selectedCrops.forEach(crop => {
+            html += `<div class="compare-row">
+                <span><strong>${crop.imageIcon} ${crop.name}</strong></span>
+                <span>${crop.growthDuration}</span>
+                <span>${crop.waterReq}</span>
+                <span>${crop.soilCompatibility}</span>
+                <span class="suitability-high">${crop.suitabilityScore}%</span>
+                <span>${crop.sunlight}</span>
+            </div>`;
+        });
+        
+        document.getElementById('compareResult').innerHTML = html;
+    }
+
+    function showCropGrowthPage(cropId) {
+        const crop = getCropById(cropId);
+        const saved = savedCrops.find(s => s.cropId === cropId && s.userEmail === currentUser.email);
+        
+        if(!crop || !saved) {
+            renderUserPage('myCrops');
+            return;
+        }
+        
+        const hasStarted = saved.startDate !== null;
+        const currentStage = saved.currentStageIndex !== null ? saved.currentStageIndex : 0;
+        const stages = crop.stages;
+        const totalStages = stages.length;
+        const progressPercent = hasStarted ? ((currentStage + 1) / totalStages) * 100 : 0;
+        
+        let stagesHtml = `<div class="stages-container" style="position:relative;"><div class="progress-line"></div><div class="progress-fill-line" style="width: ${progressPercent}%"></div>`;
+        
+        stages.forEach((stage, idx) => {
+            let statusClass = 'future';
+            if(hasStarted && idx < currentStage) statusClass = 'completed';
+            else if(hasStarted && idx === currentStage) statusClass = 'active';
+            
+            let icon = '';
+            if(stage === 'Sowing') icon = '🌱';
+            else if(stage === 'Germination') icon = '🌿';
+            else if(stage === 'Vegetative') icon = '🌳';
+            else if(stage === 'Leaf Growth') icon = '🍃';
+            else if(stage === 'Root Development') icon = '🥔';
+            else if(stage === 'Vine Growth') icon = '🍇';
+            else if(stage === 'Flowering') icon = '🌸';
+            else if(stage === 'Fruiting') icon = '🍎';
+            else if(stage === 'Harvest') icon = '✂️';
+            else icon = '🌾';
+            
+            stagesHtml += `<div class="stage-item ${statusClass}"><div class="stage-icon">${icon}</div><div class="stage-label">${stage}</div></div>`;
+        });
+        
+        stagesHtml += `</div>`;
+        
+        const mainContent = document.getElementById('mainContent');
+        
+        mainContent.innerHTML = `
+            <div class="page-header">
+                <button id="backToMyCrops" class="btn-outline"><i class="fas fa-arrow-left"></i> Back to My Crops</button>
+                <h3>${crop.imageIcon} ${crop.name} - Growth Progress</h3>
+                <div></div>
+            </div>
+            <div class="card">
+                ${!hasStarted ? `
+                    <div class="message-info">
+                        <p>You haven't started planting ${crop.name} yet. Click the button below to begin tracking growth stages.</p>
+                        <button class="btn-primary" id="startPlantingBtn" data-crop-id="${crop.id}" style="margin-top: 12px;"><i class="fas fa-play-circle"></i> Start Planting</button>
+                    </div>
+                ` : `
+                    ${stagesHtml}
+                    <div class="flex-between" style="margin-top: 16px;">
+                        <span><i class="fas fa-calendar-week"></i> Started: ${saved.startDate}</span>
+                        ${currentStage < totalStages - 1 ? 
+                            `<button class="btn-primary" id="nextStageBtn" data-crop-id="${crop.id}"><i class="fas fa-forward"></i> Next Stage</button>` : 
+                            `<span class="badge" style="background:#2b6e2b; color:white; padding:6px 12px;"><i class="fas fa-check-circle"></i> Ready for Harvest!</span>`
+                        }
+                    </div>
+                `}
+            </div>
+        `;
+        
+        document.getElementById('backToMyCrops')?.addEventListener('click', () => renderUserPage('myCrops'));
+        
+        document.getElementById('startPlantingBtn')?.addEventListener('click', () => {
+            const savedCrop = savedCrops.find(s => s.cropId === cropId && s.userEmail === currentUser.email);
+            if(savedCrop && !savedCrop.startDate) {
+                savedCrop.startDate = new Date().toISOString().slice(0,10);
+                savedCrop.currentStageIndex = 0;
+                showCropGrowthPage(cropId);
+            }
+        });
+        
+        document.getElementById('nextStageBtn')?.addEventListener('click', () => {
+            const savedCrop = savedCrops.find(s => s.cropId === cropId && s.userEmail === currentUser.email);
+            if(savedCrop && savedCrop.currentStageIndex < totalStages - 1) {
+                savedCrop.currentStageIndex++;
+                showCropGrowthPage(cropId);
+            }
+        });
+    }
+
+    // ==================== RENDER USER PAGE ====================
+    function renderUserPage(pageName) {
+        currentPage = pageName;
+        const mainContent = document.getElementById('mainContent');
+        if(!mainContent) return;
+        
+        if(pageName === 'addConsult') {
+            mainContent.innerHTML = renderAddConsultPage();
+            document.getElementById('viewRecommendationsBtn')?.addEventListener('click', () => {
+                const region = document.getElementById('regionSelect').value;
+                const soilType = document.getElementById('soilTypeSelect').value;
+                const season = document.getElementById('seasonSelect').value;
+                if(!region || !soilType || !season) {
+                    alert('Please select region, soil type, and season.');
+                    return;
+                }
+                showRecommendationsPage(region, soilType, season);
+            });
+        } 
+        else if(pageName === 'myConsults') {
+            mainContent.innerHTML = renderMyConsultsPage();
+            
+            document.getElementById('searchConsultBtn')?.addEventListener('click', () => {
+                const query = document.getElementById('searchConsultInput').value.trim();
+                if(!query) {
+                    alert('Please enter a search term.');
+                    return;
+                }
+                showSearchResultsPage(query);
+            });
+            
+            document.getElementById('resetSearchBtn')?.addEventListener('click', () => renderUserPage('myConsults'));
+            attachConsultEvents(false, '');
+        } 
+        else if(pageName === 'myCrops') {
+            mainContent.innerHTML = renderMyCropsPage();
+            
+            document.getElementById('compareMyCropsBtn')?.addEventListener('click', handleCompareMyCrops);
+            
+            document.querySelectorAll('.crop-card').forEach(card => {
+                card.addEventListener('click', (e) => {
+                    if(e.target.closest('.crop-checkbox')) return;
+                    const cropId = parseInt(card.dataset.cropId);
+                    showCropGrowthPage(cropId);
+                });
+            });
+        }
+        
+        document.querySelectorAll('[data-page]').forEach(link => {
+            link.classList.remove('active');
+            if(link.dataset.page === pageName) link.classList.add('active');
+        });
+    }
+
+    // ==================== ADMIN APP (simplified - keep same functionality) ====================
+    function renderAdminApp() {
+        return `
+            <div class="navbar"><div class="container nav-inner">
+                <div class="logo">${LOGO_HTML}</div>
+                <div class="nav-links">
+                    <a data-admin="crops" class="active"><i class="fas fa-seedling"></i> Manage Crops</a>
+                    <a data-admin="users"><i class="fas fa-users"></i> Manage Users</a>
+                    <a data-admin="consults"><i class="fas fa-chart-line"></i> User Consultations</a>
+                    <span class="badge"><i class="fas fa-user-shield"></i> ${currentUser.name}</span>
+                    <button class="btn-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div></div>
+            <main class="container" id="mainContent"></main>
+        `;
+    }
+
+    // Admin functions (keep existing functionality)
+    let currentEditCrop = null;
+    
+    function openEditCropModal(crop) {
+        currentEditCrop = crop;
+        const iconOptionsHtml = iconOptions.map(icon => `<option value="${icon}" ${crop.imageIcon === icon ? 'selected' : ''} style="font-size:1.2rem;">${icon}</option>`).join('');
+        
+        const modalHtml = `
+            <div id="editCropModal" class="modal" style="display: flex;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3><i class="fas fa-edit"></i> Edit Crop: ${crop.name}</h3>
+                        <button class="close-modal" onclick="closeEditCropModal()">&times;</button>
+                    </div>
+                    <form id="editCropForm">
+                        <div class="form-group"><label>Crop Name</label><input type="text" id="editCropName" value="${crop.name}" required></div>
+                        <div class="form-group"><label>Growth Duration</label><input type="text" id="editGrowthDuration" value="${crop.growthDuration}" required></div>
+                        <div class="form-group"><label>Water Requirements</label><input type="text" id="editWaterReq" value="${crop.waterReq}" required></div>
+                        <div class="form-group"><label>Soil Compatibility</label><input type="text" id="editSoilCompatibility" value="${crop.soilCompatibility}" required></div>
+                        <div class="form-group"><label>Best Season</label><input type="text" id="editSeason" value="${crop.season}" required></div>
+                        <div class="form-group"><label>Suitability Score (0-100)</label><input type="number" id="editSuitabilityScore" value="${crop.suitabilityScore}" min="0" max="100" required></div>
+                        <div class="form-group"><label>Icon</label><select id="editIcon" style="width:100%; padding: 10px;">${iconOptionsHtml}</select></div>
+                        <div class="flex-between" style="margin-top: 20px;">
+                            <button type="submit" class="btn-primary">Save Changes</button>
+                            <button type="button" class="btn-outline" onclick="closeEditCropModal()">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        const existingModal = document.getElementById('editCropModal');
+        if(existingModal) existingModal.remove();
+        document.body.insertAdjacentHTML('beforeend', modalHtml);
+        
+        document.getElementById('editCropForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newName = document.getElementById('editCropName').value.trim();
+            if(!newName) { alert('Crop name cannot be empty!'); return; }
+            if(isCropNameExists(newName, crop.id)) { alert(`⚠️ Crop "${newName}" already exists!`); return; }
+            
+            crop.name = newName;
+            crop.growthDuration = document.getElementById('editGrowthDuration').value.trim() || crop.growthDuration;
+            crop.waterReq = document.getElementById('editWaterReq').value.trim() || crop.waterReq;
+            crop.soilCompatibility = document.getElementById('editSoilCompatibility').value.trim() || crop.soilCompatibility;
+            crop.season = document.getElementById('editSeason').value.trim() || crop.season;
+            crop.suitabilityScore = parseInt(document.getElementById('editSuitabilityScore').value) || 80;
+            crop.imageIcon = document.getElementById('editIcon').value;
+            
+            closeEditCropModal();
+            renderAdminPage('crops');
+            alert(`✅ Crop "${crop.name}" updated successfully!`);
+        });
+    }
+    
+    window.openEditCropModal = openEditCropModal;
+    window.closeEditCropModal = function() { const modal = document.getElementById('editCropModal'); if(modal) modal.remove(); };
+
+    function renderAdminCrops() {
+        const iconOptionsHtml = iconOptions.map(icon => `<option value="${icon}">${icon}</option>`).join('');
+        return `
+            <div class="card">
+                <h3><i class="fas fa-seedling"></i> Manage Crops</h3>
+                <div style="background:#f4faf0; border-radius:18px; padding:16px; margin-bottom:20px;">
+                    <h4>Add New Crop</h4>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                        <div style="flex:1; min-width:120px;"><input type="text" id="newCropName" placeholder="Crop Name"></div>
+                        <div style="flex:1; min-width:120px;"><input type="text" id="newGrowthDuration" placeholder="Growth Duration"></div>
+                        <div style="flex:1; min-width:100px;"><input type="text" id="newWaterReq" placeholder="Water"></div>
+                        <div style="flex:1; min-width:120px;"><input type="text" id="newSoilCompatibility" placeholder="Soil"></div>
+                        <div style="flex:1; min-width:100px;"><input type="text" id="newSeason" placeholder="Season"></div>
+                        <div style="flex:0.7; min-width:80px;"><input type="number" id="newSuitabilityScore" placeholder="Score" value="85"></div>
+                        <div style="flex:0.5;"><select id="newIcon">${iconOptionsHtml}</select></div>
+                        <button id="addCropBtn" class="btn-primary">Add</button>
+                    </div>
+                    <div id="addCropError" class="error-message"></div>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table><thead><tr><th>Icon</th><th>Crop Name</th><th>Growth</th><th>Water</th><th>Soil</th><th>Season</th><th>Score</th><th>Actions</th></tr></thead>
+                    <tbody>${cropsDB.map(crop => `<tr><td>${crop.imageIcon}</td><td><strong>${crop.name}</strong></td><td>${crop.growthDuration}</td><td>${crop.waterReq}</td><td>${crop.soilCompatibility}</td><td>${crop.season}</td><td>${crop.suitabilityScore}%</td>
+                    <td><button class="btn-secondary edit-crop-admin" data-crop-id="${crop.id}" style="margin-right:5px;">Edit</button><button class="btn-danger delete-crop-admin" data-crop-id="${crop.id}">Delete</button></td></tr>`).join('')}</tbody></table>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderAdminUsers() {
+        return `<div class="card"><h3>Manage Users</h3>
+        <div style="overflow-x: auto;"><table><thead><tr><th>Email</th><th>Name</th><th>Role</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody>${usersDB.map(user => `<tr><td>${user.email}</td><td>${user.name}</td><td>${user.role}</td><td>${user.status}</td>
+        <td>${user.status === 'active' ? `<button class="btn-warning deactivate-user" data-user-id="${user.id}">Deactivate</button>` : `<button class="btn-success activate-user" data-user-id="${user.id}">Activate</button>`}
+        <button class="btn-danger delete-user" data-user-id="${user.id}" ${user.role === 'admin' ? 'disabled' : ''}>Delete</button></td></tr>`).join('')}</tbody></table></div>
+        <div class="message-info">Admin accounts cannot be deleted.</div></div>`;
+    }
+
+    function renderAdminConsults() {
+        return `<div class="card"><h3>All User Consultations</h3>
+        <div class="search-box"><input type="text" id="adminSearchInput" placeholder="Search..."><button id="adminSearchBtn" class="btn-primary">Search</button><button id="adminResetBtn" class="btn-outline">Reset</button></div>
+        <div id="adminConsultsList">${consultations.map(consult => { const crop = getCropById(consult.cropId); return `<div class="consult-card"><strong>${consult.consultId}</strong> - ${consult.userEmail}<br>${consult.region} | ${consult.soilType} | ${consult.season}<br>Crop: ${crop ? crop.name : consult.cropName}</div>`; }).join('') || '<p>No consultations.</p>'}</div></div>`;
+    }
+
+    function attachAdminCropEvents() {
+        document.querySelectorAll('.edit-crop-admin').forEach(btn => btn.addEventListener('click', () => openEditCropModal(cropsDB.find(c => c.id == btn.dataset.cropId))));
+        document.querySelectorAll('.delete-crop-admin').forEach(btn => btn.addEventListener('click', () => { if(confirm('Delete this crop?')) { const idx = cropsDB.findIndex(c => c.id == btn.dataset.cropId); if(idx !== -1) cropsDB.splice(idx,1); renderAdminPage('crops'); } }));
+        document.getElementById('addCropBtn')?.addEventListener('click', () => {
+            const name = document.getElementById('newCropName').value.trim();
+            if(!name) { document.getElementById('addCropError').innerHTML = 'Enter crop name'; return; }
+            if(isCropNameExists(name)) { document.getElementById('addCropError').innerHTML = `Crop "${name}" exists!`; return; }
+            cropsDB.push({ id: cropsDB.length+10, name, growthDuration: document.getElementById('newGrowthDuration').value.trim() || "50-70 days", waterReq: document.getElementById('newWaterReq').value.trim() || "Moderate", soilCompatibility: document.getElementById('newSoilCompatibility').value.trim() || "Loamy", season: document.getElementById('newSeason').value.trim() || "Spring", suitabilityScore: parseInt(document.getElementById('newSuitabilityScore').value) || 80, sunlight: "Full sun", landArea: "0.3m²", imageIcon: document.getElementById('newIcon').value, stages: ["Sowing", "Germination", "Vegetative", "Harvest"] });
+            renderAdminPage('crops');
+        });
+    }
+
+    function attachAdminUserEvents() {
+        document.querySelectorAll('.deactivate-user').forEach(btn => btn.addEventListener('click', () => { const u = usersDB.find(u => u.id == btn.dataset.userId); if(u && u.role !== 'admin') u.status = 'inactive'; renderAdminPage('users'); }));
+        document.querySelectorAll('.activate-user').forEach(btn => btn.addEventListener('click', () => { const u = usersDB.find(u => u.id == btn.dataset.userId); if(u) u.status = 'active'; renderAdminPage('users'); }));
+        document.querySelectorAll('.delete-user').forEach(btn => btn.addEventListener('click', () => { const idx = usersDB.findIndex(u => u.id == btn.dataset.userId); if(idx !== -1 && usersDB[idx].role !== 'admin') usersDB.splice(idx,1); renderAdminPage('users'); }));
+    }
+
+    function attachAdminConsultsEvents() {
+        document.getElementById('adminSearchBtn')?.addEventListener('click', () => { const q = document.getElementById('adminSearchInput').value.toLowerCase(); document.getElementById('adminConsultsList').innerHTML = consultations.filter(c => c.userEmail.toLowerCase().includes(q) || c.consultId.toLowerCase().includes(q)).map(consult => { const crop = getCropById(consult.cropId); return `<div class="consult-card"><strong>${consult.consultId}</strong> - ${consult.userEmail}<br>${consult.region} | ${consult.soilType} | ${consult.season}<br>Crop: ${crop ? crop.name : consult.cropName}</div>`; }).join('') || '<p>No results.</p>'; });
+        document.getElementById('adminResetBtn')?.addEventListener('click', () => renderAdminPage('consults'));
+    }
+
+    function renderAdminPage(pageName) {
+        const mainContent = document.getElementById('mainContent');
+        if(pageName === 'crops') { mainContent.innerHTML = renderAdminCrops(); attachAdminCropEvents(); }
+        else if(pageName === 'users') { mainContent.innerHTML = renderAdminUsers(); attachAdminUserEvents(); }
+        else if(pageName === 'consults') { mainContent.innerHTML = renderAdminConsults(); attachAdminConsultsEvents(); }
+        document.querySelectorAll('[data-admin]').forEach(link => { link.classList.remove('active'); if(link.dataset.admin === pageName) link.classList.add('active'); });
+    }
+
+    function renderMainApp() {
+        const appDiv = document.getElementById('app');
+        if(currentUser.role === 'admin') {
+            appDiv.innerHTML = renderAdminApp();
+            renderAdminPage('crops');
+            document.querySelectorAll('[data-admin]').forEach(link => link.addEventListener('click', () => renderAdminPage(link.dataset.admin)));
+        } else {
+            appDiv.innerHTML = renderUserApp();
+            renderUserPage('addConsult');
+            document.querySelectorAll('[data-page]').forEach(link => link.addEventListener('click', () => renderUserPage(link.dataset.page)));
+        }
+        document.getElementById('logoutBtn')?.addEventListener('click', () => { clearSession(); currentUser = null; initApp(); });
+    }
+
+    function initApp() {
+        const saved = loadSession();
+        if(saved) { 
+            const user = usersDB.find(u => u.id === saved.id && u.status === 'active'); 
+            if(user) { 
+                currentUser = { ...user, password: undefined }; 
+                renderMainApp(); 
+                return; 
+            } else clearSession(); 
+        }
+        
+        const appDiv = document.getElementById('app');
+        appDiv.innerHTML = renderAuth();
+        
+        document.querySelectorAll('.auth-tab').forEach(tab => tab.addEventListener('click', () => {
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.getElementById('auth-form-container').innerHTML = tab.dataset.tab === 'login' ? renderLoginForm() : renderRegisterForm();
+            document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+            document.getElementById('registerForm')?.addEventListener('submit', handleRegister);
+            document.getElementById('registerLink')?.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('[data-tab="register"]').click(); });
+            document.getElementById('loginLink')?.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('[data-tab="login"]').click(); });
+        }));
+        
+        document.getElementById('loginForm')?.addEventListener('submit', handleLogin);
+        document.getElementById('registerLink')?.addEventListener('click', (e) => { e.preventDefault(); document.querySelector('[data-tab="register"]').click(); });
+    }
+    
+    initApp();
+</script>
+</body>
+</html>
+```
