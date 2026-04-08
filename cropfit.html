@@ -151,7 +151,7 @@
     let currentUser = null;
     let currentPage = "addConsult";
 
-const LOGO_HTML = `<img src="cropfit.jpg" alt="CropFit Logo" style="height: 45px; width: auto;">`;
+const LOGO_HTML = `<img src="cropfit.jpg" alt="" style="height: 45px; width: auto;">`;
     function saveSession(user) { sessionStorage.setItem('cropfit_user', JSON.stringify(user)); }
     function loadSession() { const saved = sessionStorage.getItem('cropfit_user'); return saved ? JSON.parse(saved) : null; }
     function clearSession() { sessionStorage.removeItem('cropfit_user'); }
