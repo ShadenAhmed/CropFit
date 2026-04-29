@@ -13,17 +13,22 @@ admin123
 
 ### CUSTOMER Accounts: Any email with .com works - account created automatically
 
-##  Features
+FEATURES
+--------
+User side:
+  - Login / Register / Logout
+  - Add Consultation (region / soil / season) , recommended crops
+  - Compare 2+ recommended crops side by side
+  - View crop details (water, soil, season, sunlight, area, growth)
+  - Save crop to "My Crops" — also creates a consultation linked to that crop
+  - My Consultations: list, search by Consult ID, edit, delete
+  - My Crops: list, growth-stage timeline, Start Planting, Next Stage, Remove
 
-###  Admin Users
-- Manage Crops – Add, edit, or delete crop data
-- Manage Users – Activate, deactivate, or delete user accounts
-- View Consultations – Monitor all user consultations
+Admin side:
+  - Manage Crops: list, add, edit, delete
+  - Manage Users: activate, deactivate, delete (admin accounts protected)
+  - View All User Consultations with search
 
-###  Regular Users
-- Add Consultation – Get crop recommendations by selecting region, soil, season
-- My Consultations – View, search, edit, or delete past consultations
-- My Crops – Save crops, track growth stages (Sowing → Harvest), compare crops side by side
 
 ##  Tech Stack
 
