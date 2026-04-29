@@ -2,9 +2,9 @@
 -- version 5.1.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:8889
--- Generation Time: 27 أبريل 2026 الساعة 21:07
--- إصدار الخادم: 5.7.24
+-- Host: localhost:3306
+-- Generation Time: Apr 29, 2026 at 09:14 PM
+-- Server version: 5.7.24
 -- PHP Version: 8.3.1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `consultation`
+-- Table structure for table `consultation`
 --
 
 CREATE TABLE `consultation` (
@@ -33,13 +33,23 @@ CREATE TABLE `consultation` (
   `region` varchar(100) DEFAULT NULL,
   `soilType` varchar(100) DEFAULT NULL,
   `season` varchar(50) DEFAULT NULL,
-  `date` date DEFAULT NULL
+  `date` date DEFAULT NULL,
+  `cropID` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `consultation`
+--
+
+INSERT INTO `consultation` (`consultID`, `userID`, `region`, `soilType`, `season`, `date`, `cropID`) VALUES
+(1, 6, 'Central Region', 'Sandy', 'Summer', '2026-04-29', NULL),
+(2, 6, 'Central Region', 'Sandy', 'Summer', '2026-04-29', NULL),
+(3, 6, 'Southern Region', 'Silt', 'Winter', '2026-04-29', 10);
 
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `crop`
+-- Table structure for table `crop`
 --
 
 CREATE TABLE `crop` (
@@ -53,7 +63,7 @@ CREATE TABLE `crop` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- إرجاع أو استيراد بيانات الجدول `crop`
+-- Dumping data for table `crop`
 --
 
 INSERT INTO `crop` (`cropID`, `name`, `waterRequirement`, `growthDuration`, `preferredSoil`, `preferredSeason`, `suitabilityScore`) VALUES
@@ -81,7 +91,7 @@ INSERT INTO `crop` (`cropID`, `name`, `waterRequirement`, `growthDuration`, `pre
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `recommendation`
+-- Table structure for table `recommendation`
 --
 
 CREATE TABLE `recommendation` (
@@ -93,7 +103,7 @@ CREATE TABLE `recommendation` (
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `recommendation_crops`
+-- Table structure for table `recommendation_crops`
 --
 
 CREATE TABLE `recommendation_crops` (
@@ -104,20 +114,33 @@ CREATE TABLE `recommendation_crops` (
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `savedcrop`
+-- Table structure for table `savedcrop`
 --
 
 CREATE TABLE `savedcrop` (
   `savedID` int(11) NOT NULL,
   `userID` int(11) DEFAULT NULL,
   `cropID` int(11) DEFAULT NULL,
-  `progress` int(11) DEFAULT '0'
+  `progress` int(11) DEFAULT '0',
+  `startDate` date DEFAULT NULL,
+  `currentStageIndex` int(11) DEFAULT NULL,
+  `savedAt` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `savedcrop`
+--
+
+INSERT INTO `savedcrop` (`savedID`, `userID`, `cropID`, `progress`, `startDate`, `currentStageIndex`, `savedAt`) VALUES
+(1, 6, 11, 0, '2026-04-29', 2, NULL),
+(2, 6, 4, 0, '2026-04-29', 2, NULL),
+(3, 6, 3, 0, '2026-04-29', 1, NULL),
+(4, 6, 10, 0, NULL, NULL, '2026-04-29');
 
 -- --------------------------------------------------------
 
 --
--- بنية الجدول `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -125,18 +148,17 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('user','admin') DEFAULT 'user'
+  `role` enum('user','admin') DEFAULT 'user',
+  `status` enum('active','inactive') DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- إرجاع أو استيراد بيانات الجدول `user`
+-- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`userID`, `name`, `email`, `password`, `role`) VALUES
-(1, 'Sara Ahmed', 'sara@example.com', 'pass123', 'user'),
-(2, 'Michael Scott', 'michael@example.com', 'pass456', 'user'),
-(3, 'Nora Khalid', 'noura@example.com', 'pass789', 'user'),
-(4, 'System Admin', 'admin@system.com', 'admin123', 'admin');
+INSERT INTO `user` (`userID`, `name`, `email`, `password`, `role`, `status`) VALUES
+(4, 'Admin', 'admin@system.com', '$2y$10$4GaQqDpCpzMegsen6fY0ceep5hPDeKFrPqpBQJNyhiZ.OhGChvtbO', 'admin', 'active'),
+(6, 'dd', 'dd@gmail.com', '$2y$10$7yIKqubJinLbjQ1CQOrT/e9DO8nEH73MIvDly3cbkxo8MKNPeQaDO', 'user', 'active');
 
 --
 -- Indexes for dumped tables
@@ -192,7 +214,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `consultation`
 --
 ALTER TABLE `consultation`
-  MODIFY `consultID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `consultID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `crop`
@@ -210,39 +232,39 @@ ALTER TABLE `recommendation`
 -- AUTO_INCREMENT for table `savedcrop`
 --
 ALTER TABLE `savedcrop`
-  MODIFY `savedID` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `savedID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `userID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- قيود الجداول المحفوظة
+-- Constraints for dumped tables
 --
 
 --
--- القيود للجدول `consultation`
+-- Constraints for table `consultation`
 --
 ALTER TABLE `consultation`
   ADD CONSTRAINT `consultation_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`) ON DELETE CASCADE;
 
 --
--- القيود للجدول `recommendation`
+-- Constraints for table `recommendation`
 --
 ALTER TABLE `recommendation`
   ADD CONSTRAINT `recommendation_ibfk_1` FOREIGN KEY (`consultID`) REFERENCES `consultation` (`consultID`) ON DELETE CASCADE;
 
 --
--- القيود للجدول `recommendation_crops`
+-- Constraints for table `recommendation_crops`
 --
 ALTER TABLE `recommendation_crops`
   ADD CONSTRAINT `recommendation_crops_ibfk_1` FOREIGN KEY (`recommendationID`) REFERENCES `recommendation` (`recommendationID`),
   ADD CONSTRAINT `recommendation_crops_ibfk_2` FOREIGN KEY (`cropID`) REFERENCES `crop` (`cropID`);
 
 --
--- القيود للجدول `savedcrop`
+-- Constraints for table `savedcrop`
 --
 ALTER TABLE `savedcrop`
   ADD CONSTRAINT `savedcrop_ibfk_1` FOREIGN KEY (`userID`) REFERENCES `user` (`userID`),
