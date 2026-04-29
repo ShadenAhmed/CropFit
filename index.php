@@ -1,40 +1,22 @@
 <?php
-// =========================================================================
-//  CropFit  — single-file PHP app  (MAMP / MySQL final version)
-//
-//  Drop this file into your MAMP htdocs folder (e.g. htdocs/cropfit/index.php)
-//  and visit http://localhost:8888/cropfit/  in your browser.
-//
-//  On the very first request the script will:
-//    - Connect to MySQL using the MAMP defaults (root / root, port 8889).
-//    - Create the database "cropfit" if it does not exist.
-//    - Create every table from your original schema if missing.
-//    - Add the columns the original schema was missing
-//        (user.status, consultation.cropID, savedcrop.startDate / currentStageIndex / savedAt).
-//    - Seed 4 users (incl. admin@system.com / admin123) and 20 crops if the
-//      tables are empty.
-//
-//  If your MAMP credentials or port are different, edit DB_USER / DB_PASS /
-//  DB_PORT below.
-// =========================================================================
 
 session_start();
 
 define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');     // MAMP default. Use 3306 if you changed it.
+define('DB_PORT', '3306');     
 define('DB_USER', 'root');
-define('DB_PASS', 'root');     // MAMP default password is "root".
+define('DB_PASS', 'root');    
 define('DB_NAME', 'cropfit');
 
 try {
-    // 1) connect to MySQL server (no DB selected) so we can create the DB if needed.
+   
     $dsnServer = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";charset=utf8mb4";
     $bootstrap = new PDO($dsnServer, DB_USER, DB_PASS, [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     ]);
     $bootstrap->exec("CREATE DATABASE IF NOT EXISTS `" . DB_NAME . "` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 
-    // 2) connect to the actual database
+   
     $pdo = new PDO(
         "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4",
         DB_USER, DB_PASS,
@@ -46,7 +28,7 @@ try {
         . "<br>Check DB_HOST / DB_PORT / DB_USER / DB_PASS at the top of index.php.");
 }
 
-// ---- one-time schema setup / migration ----
+
 function ensure_schema(PDO $pdo) {
     $pdo->exec("CREATE TABLE IF NOT EXISTS user (
         userID INT AUTO_INCREMENT PRIMARY KEY,
@@ -105,7 +87,7 @@ function ensure_schema(PDO $pdo) {
         FOREIGN KEY (cropID) REFERENCES crop(cropID) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
 
-    // Add columns that may be missing if the user already had the original tables.
+    
     $colExists = function($table, $col) use ($pdo) {
         $stmt = $pdo->prepare("SELECT COUNT(*) FROM information_schema.COLUMNS
                                WHERE TABLE_SCHEMA = DATABASE()
@@ -121,7 +103,7 @@ function ensure_schema(PDO $pdo) {
 }
 
 function ensure_seed_data(PDO $pdo) {
-    // Seed users only if no admin exists yet.
+    
     $hasAdmin = (int)$pdo->query("SELECT COUNT(*) FROM user WHERE role='admin'")->fetchColumn();
     if ($hasAdmin === 0) {
         $users = [
@@ -135,7 +117,7 @@ function ensure_seed_data(PDO $pdo) {
             $stmt->execute([$u[0], $u[1], password_hash($u[2], PASSWORD_DEFAULT), $u[3]]);
         }
     }
-    // Seed crops only if table is empty.
+    
     $cropCount = (int)$pdo->query("SELECT COUNT(*) FROM crop")->fetchColumn();
     if ($cropCount === 0) {
         $crops = [
@@ -173,7 +155,7 @@ try {
     die("Schema setup failed: " . htmlspecialchars($e->getMessage()));
 }
 
-// ---- helper: who is logged in? ----
+
 function current_user_id() { return $_SESSION['user_id'] ?? null; }
 function current_role()    { return $_SESSION['user_role'] ?? null; }
 function require_login() {
@@ -192,7 +174,7 @@ function require_admin() {
     }
 }
 
-// ---- helper: icon for a crop (kept on the server side) ----
+
 function crop_icon($name) {
     $icons = [
         'Wheat' => '🌾', 'Tomato' => '🍅', 'Date Palm' => '🌴', 'Maize' => '🌽',
@@ -204,7 +186,7 @@ function crop_icon($name) {
     return $icons[$name] ?? '🌱';
 }
 
-// ---- helper: stages for a crop ----
+
 function crop_stages($name) {
     $custom = [
         'Tomato'      => ['Sowing','Germination','Vegetative','Flowering','Fruiting','Harvest'],
@@ -217,7 +199,7 @@ function crop_stages($name) {
     return $custom[$name] ?? ['Sowing','Germination','Vegetative','Flowering','Harvest'];
 }
 
-// ---- helper: enrich a crop row with display fields ----
+
 function enrich_crop($c) {
     $c['imageIcon']       = crop_icon($c['name']);
     $c['stages']          = crop_stages($c['name']);
@@ -232,9 +214,7 @@ function enrich_crop($c) {
     return $c;
 }
 
-// =========================================================================
-//  API ROUTER
-// =========================================================================
+
 if (isset($_GET['api'])) {
     header('Content-Type: application/json');
     $api    = $_GET['api'];
@@ -242,7 +222,7 @@ if (isset($_GET['api'])) {
     $body   = json_decode(file_get_contents('php://input'), true) ?: [];
 
     try {
-        // ---------- AUTH ----------
+      
         if ($api === 'session') {
             if (current_user_id()) {
                 echo json_encode(['user' => [
@@ -306,7 +286,7 @@ if (isset($_GET['api'])) {
             exit;
         }
 
-        // ---------- CROPS (read open to logged-in users; write admin-only) ----------
+       
         if ($api === 'crops' && $method === 'GET') {
             require_login();
             $rows = $pdo->query("SELECT * FROM crop ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
@@ -368,14 +348,14 @@ if (isset($_GET['api'])) {
             exit;
         }
 
-        // ---------- RECOMMENDATIONS ----------
+       
         if ($api === 'recommendations' && $method === 'POST') {
             require_login();
             $region = trim($body['region']   ?? '');
             $soil   = trim($body['soilType'] ?? '');
             $season = trim($body['season']   ?? '');
 
-            // Match by soil OR season; rank best matches first.
+            
             $stmt = $pdo->prepare(
                 "SELECT *,
                         ((preferredSoil = ?) + (preferredSeason = ? OR preferredSeason = 'All Seasons')) AS matchScore
@@ -389,7 +369,7 @@ if (isset($_GET['api'])) {
             $stmt->execute([$soil, $season, $soil, $season]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-            // Fallback: top crops if nothing matched
+           
             if (count($rows) === 0) {
                 $rows = $pdo->query("SELECT * FROM crop ORDER BY suitabilityScore DESC LIMIT 6")
                             ->fetchAll(PDO::FETCH_ASSOC);
@@ -398,10 +378,10 @@ if (isset($_GET['api'])) {
             exit;
         }
 
-        // ---------- CONSULTATIONS ----------
+       
         if ($api === 'consultations' && $method === 'GET') {
             require_login();
-            // Admin sees all; user sees own. Optional ?search= filter.
+            
             $search = trim($_GET['search'] ?? '');
             if (current_role() === 'admin') {
                 $sql = "SELECT c.*, u.name AS userName, u.email AS userEmail, cr.name AS cropName
@@ -472,7 +452,7 @@ if (isset($_GET['api'])) {
         if ($api === 'consultations' && $method === 'DELETE') {
             require_login();
             $id = (int)($_GET['id'] ?? 0);
-            // Look up the consult so we can also clean up the linked saved crop if no other consult uses it.
+           
             $stmt = $pdo->prepare("SELECT cropID FROM consultation WHERE consultID=? AND userID=?");
             $stmt->execute([$id, current_user_id()]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -482,7 +462,7 @@ if (isset($_GET['api'])) {
             $pdo->prepare("DELETE FROM consultation WHERE consultID=? AND userID=?")
                 ->execute([$id, current_user_id()]);
 
-            // If user has no other consult for this crop, also remove from saved crops.
+           
             if ($cropID) {
                 $check = $pdo->prepare("SELECT 1 FROM consultation WHERE userID=? AND cropID=?");
                 $check->execute([current_user_id(), $cropID]);
@@ -495,7 +475,7 @@ if (isset($_GET['api'])) {
             exit;
         }
 
-        // ---------- SAVED CROPS ----------
+        
         if ($api === 'saved-crops' && $method === 'GET') {
             require_login();
             $stmt = $pdo->prepare(
@@ -571,7 +551,6 @@ if (isset($_GET['api'])) {
             exit;
         }
 
-        // ---------- ADMIN: USERS ----------
         if ($api === 'users' && $method === 'GET') {
             require_admin();
             $rows = $pdo->query("SELECT userID, name, email, role, status FROM user ORDER BY userID")->fetchAll(PDO::FETCH_ASSOC);
@@ -583,7 +562,7 @@ if (isset($_GET['api'])) {
             require_admin();
             $id     = (int)($body['userID'] ?? 0);
             $status = ($body['status'] ?? '') === 'inactive' ? 'inactive' : 'active';
-            // Don't allow disabling another admin (keeps the system usable).
+
             $stmt = $pdo->prepare("SELECT role FROM user WHERE userID=?");
             $stmt->execute([$id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -603,7 +582,7 @@ if (isset($_GET['api'])) {
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             if (!$row) { echo json_encode(['error' => 'User not found']); exit; }
             if ($row['role'] === 'admin') { echo json_encode(['error' => 'Admin accounts cannot be deleted']); exit; }
-            // Clean up dependent rows first (works for SQLite without ON DELETE CASCADE on savedcrop).
+
             $pdo->prepare("DELETE FROM savedcrop    WHERE userID=?")->execute([$id]);
             $pdo->prepare("DELETE FROM consultation WHERE userID=?")->execute([$id]);
             $pdo->prepare("DELETE FROM user         WHERE userID=?")->execute([$id]);
@@ -621,12 +600,11 @@ if (isset($_GET['api'])) {
     }
 }
 
-// ---- ?logout=1 plain redirect (used by header link) ----
+
 if (isset($_GET['logout'])) { session_destroy(); header('Location: index.php'); exit; }
 
-// =========================================================================
-//  FRONTEND  (HTML + JS — uses the API above via fetch)
-// =========================================================================
+
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -740,9 +718,7 @@ input:focus, select:focus { outline: none; border-color: #3b9e3b; }
 </div>
 
 <script>
-// =========================================================================
-// CropFit front-end (vanilla JS, talks to the PHP API in this same file)
-// =========================================================================
+
 
 const API = (endpoint, method = 'GET', data = null) => {
   const opts = { method, headers: { 'Content-Type': 'application/json' }, credentials: 'same-origin' };
@@ -755,10 +731,9 @@ const API = (endpoint, method = 'GET', data = null) => {
   });
 };
 
-let currentUser = null;     // populated from /api?session
-let allCrops    = [];       // cached for compare/edit
+let currentUser = null;     
+let allCrops    = [];       
 
-// ---------- bootstrap ----------
 async function boot() {
   try {
     const s = await API('session');
@@ -767,7 +742,6 @@ async function boot() {
   if (!currentUser) renderAuth(); else renderMainApp();
 }
 
-// ---------- AUTH UI ----------
 function renderAuth() {
   document.getElementById('app').innerHTML = `
     <div class="auth-container">
@@ -849,12 +823,10 @@ async function handleRegister(e) {
   } catch (err) { errEl.textContent = err.message; }
 }
 
-// ---------- MAIN APP ----------
 async function renderMainApp() {
   if (currentUser.role === 'admin') renderAdminShell();
   else renderUserShell();
 
-  // pre-load crops cache for compare
   try { allCrops = await API('crops'); } catch (e) { allCrops = []; }
 
   if (currentUser.role === 'admin') renderAdminPage('crops');
@@ -867,7 +839,6 @@ async function logout() {
   renderAuth();
 }
 
-// ---------- USER SHELL ----------
 function renderUserShell() {
   document.getElementById('app').innerHTML = `
     <div class="navbar"><div class="container nav-inner">
@@ -894,7 +865,6 @@ function renderUserPage(page) {
   if (page === 'myCrops')    return renderMyCrops();
 }
 
-// ---------- ADD CONSULTATION + RECOMMENDATIONS + COMPARE + SAVE ----------
 function renderAddConsult() {
   document.getElementById('mainContent').innerHTML = `
     <div class="card">
@@ -998,11 +968,11 @@ async function showRecommendations(region, soilType, season) {
     const cropName = btn.dataset.name;
     btn.disabled = true;
     try {
-      // 1) Save crop to My Crops
-      const r1 = await API('saved-crops', 'POST', { cropID });
+
+        const r1 = await API('saved-crops', 'POST', { cropID });
       if (!r1.success) { alert(r1.error || 'Could not save'); btn.disabled = false; return; }
-      // 2) Create consultation linked to this crop (so My Consultations shows the crop)
-      const r2 = await API('consultations', 'POST', { region, soilType, season, cropID });
+
+        const r2 = await API('consultations', 'POST', { region, soilType, season, cropID });
       alert(`✅ ${cropName} saved to My Crops!\nConsultation ID: ${r2.consultId}`);
     } catch (err) { alert(err.message); btn.disabled = false; }
   }));
@@ -1034,8 +1004,8 @@ function recommendationItemHTML(c) {
     </div>`;
 }
 
-// ---------- MY CONSULTATIONS ----------
-async function renderMyConsults(searchQuery = '') {
+
+    async function renderMyConsults(searchQuery = '') {
   let list = [];
   try {
     const url = 'consultations' + (searchQuery ? '&search=' + encodeURIComponent(searchQuery) : '');
@@ -1140,8 +1110,8 @@ async function showEditConsultModal(consultID) {
   });
 }
 
-// ---------- MY CROPS + GROWTH ----------
-async function renderMyCrops() {
+
+    async function renderMyCrops() {
   let saved = [];
   try { saved = await API('saved-crops'); } catch (e) { alert(e.message); }
   document.getElementById('mainContent').innerHTML = `
@@ -1233,9 +1203,7 @@ async function showCropGrowth(savedID) {
   });
 }
 
-// =========================================================================
-//  ADMIN
-// =========================================================================
+
 function renderAdminShell() {
   document.getElementById('app').innerHTML = `
     <div class="navbar"><div class="container nav-inner">
@@ -1262,7 +1230,6 @@ function renderAdminPage(page) {
   if (page === 'consults') return renderAdminConsults();
 }
 
-// ---- Manage Crops ----
 async function renderAdminCrops() {
   let crops = [];
   try { crops = await API('crops'); allCrops = crops; } catch (e) { alert(e.message); }
@@ -1351,7 +1318,6 @@ function showCropModal(crop) {
   });
 }
 
-// ---- Manage Users ----
 async function renderAdminUsers() {
   let users = [];
   try { users = await API('users'); } catch (e) { alert(e.message); }
@@ -1394,7 +1360,6 @@ async function renderAdminUsers() {
   }));
 }
 
-// ---- View User Consultations ----
 async function renderAdminConsults(searchQuery = '') {
   let list = [];
   try {
@@ -1429,9 +1394,7 @@ async function renderAdminConsults(searchQuery = '') {
   document.getElementById('resetBtn').addEventListener('click', () => renderAdminConsults());
 }
 
-// =========================================================================
-//  Utilities
-// =========================================================================
+
 function escapeHtml(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
