@@ -357,16 +357,12 @@ if (isset($_GET['api'])) {
 
             
             $stmt = $pdo->prepare(
-                "SELECT *,
-                        ((preferredSoil = ?) + (preferredSeason = ? OR preferredSeason = 'All Seasons')) AS matchScore
-                 FROM crop
-                 WHERE preferredSoil = ?
-                    OR preferredSeason = ?
-                    OR preferredSeason = 'All Seasons'
-                 ORDER BY matchScore DESC, suitabilityScore DESC
-                 LIMIT 8"
-            );
-            $stmt->execute([$soil, $season, $soil, $season]);
+    "SELECT * FROM crop
+     WHERE preferredSoil = ?
+       AND (preferredSeason = ? OR preferredSeason = 'All Seasons')
+     ORDER BY suitabilityScore DESC"
+);
+$stmt->execute([$soil, $season]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
            
