@@ -4,13 +4,12 @@
 A web-based decision support system that helps beginner farmers choose the right crops based on their region, soil type, and planting season.
 
 
-### Admin Accounts 
-Email 
- 445200244@student.ksu.edu.sa 
- 445206333@student.ksu.edu.sa 
- 445202121@student.ksu.edu.sa 
- 445200324@student.ksu.edu.sa 
- 445200372@student.ksu.edu.sa 
+### Admin Account
+Email:
+ admin@system.com 
+Pass:
+admin123
+
 
 ### CUSTOMER Accounts: Any email with .com works - account created automatically
 
