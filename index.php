@@ -746,7 +746,7 @@ function renderAuth() {
   document.getElementById('app').innerHTML = `
     <div class="auth-container">
       <div class="card" style="text-align:center;">
-        <img src="logo.png" alt="CropFit" style="width:120px; height:120px; margin-bottom:10px; border-radius:50%; object-fit:cover;">
+        <div><img src="logo.png" alt="CropFit" style="width:120px; height:120px; margin-bottom:10px; object-fit:cover;"></div>
         <h2 style="color:#2b6e2b; margin-bottom:18px;">CropFit</h2>
         <div class="auth-tabs">
           <div class="auth-tab active" data-tab="login">Login</div>
@@ -842,7 +842,7 @@ async function logout() {
 function renderUserShell() {
   document.getElementById('app').innerHTML = `
     <div class="navbar"><div class="container nav-inner">
-      <div class="logo">🌾 <span>CropFit</span></div>
+      <div><img src="logo.png" alt="CropFit" style="width:120px; height:120px; margin-bottom:10px; object-fit:cover;"></div>
       <div class="nav-links">
         <a data-page="addConsult"  class="active"><i class="fas fa-plus-circle"></i> Add Consultation</a>
         <a data-page="myConsults"><i class="fas fa-history"></i> My Consultations</a>
@@ -1207,7 +1207,7 @@ async function showCropGrowth(savedID) {
 function renderAdminShell() {
   document.getElementById('app').innerHTML = `
     <div class="navbar"><div class="container nav-inner">
-      <div class="logo">🌾 <span>CropFit Admin</span></div>
+      <div><img src="logo.png" alt="CropFit" style="width:120px; height:120px; margin-bottom:10px; object-fit:cover;"></div>
       <div class="nav-links">
         <a data-admin="crops"    class="active"><i class="fas fa-seedling"></i> Manage Crops</a>
         <a data-admin="users"><i class="fas fa-users"></i> Manage Users</a>
