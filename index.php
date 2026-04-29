@@ -746,7 +746,7 @@ function renderAuth() {
   document.getElementById('app').innerHTML = `
     <div class="auth-container">
       <div class="card" style="text-align:center;">
-        <div style="font-size:60px; margin-bottom:10px;">🌾</div>
+        <img src="logo.png" alt="CropFit" style="width:120px; height:120px; margin-bottom:10px; border-radius:50%; object-fit:cover;">
         <h2 style="color:#2b6e2b; margin-bottom:18px;">CropFit</h2>
         <div class="auth-tabs">
           <div class="auth-tab active" data-tab="login">Login</div>
